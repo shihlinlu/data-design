@@ -32,7 +32,7 @@
 			<p>Nancy needs to create furniture collections for three major groups of people: 1) future customers to get inspiration for whole-room furniture setups and 2) investors so that they can assess the product traction and company growth. Since Nancy is a key decision maker for designing upcoming furniture products, she works closely with a data analyst to see the products that customers are viewing and purchasing. They also send extensively detailed customer feedback surveys. An additional metric that would be useful is being able to track products that customers like, but do not have immediate plans of purchasing. This will also allow Nancy and the rest of the Contempo Design team to view most popular items from furniture collections.</p>
 			<h3>Goals:</h3>
 			<ol>
-				<li>In less than 1 minute, obtain the ability to easily "favorite" individual or groups of furniture products.</li>
+				<li>In less than 1 minute from login, obtain the ability to easily "favorite" individual or groups of furniture products.</li>
 				<li>View customer's public favorite furniture products.</li>
 			</ol>
 
