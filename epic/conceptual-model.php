@@ -22,42 +22,34 @@
 			<p>Object: Furniture Items</p>
 			<h3>Profile</h3>
 			<ul>
-				<li>profileID</li>
+				<li>profileId</li>
 				<li>profileHash</li>
 				<li>profileSalt</li>
 				<li>profileActivationToken</li>
 				<li>profileEmail</li>
-				<li>profileID</li>
 				<li>profileUsername</li>
 				<li>profileLocation</li>
-				<li>profileJoinDate</li>
-				<li>profileBio</li>
 				<li>profileImage</li>
 				<li>profileFavoriteItems</li>
 				<li>profileItems</li>
-				<li>profileItemCost</li>
-				<li>profileAnnouncements</li>
 			</ul>
 			<h3>Items</h3>
 			<ul>
-				<li>itemID</li>
+				<li>itemId</li>
 				<li>itemType</li>
-				<li>itemStyle</li>
 				<li>itemDescription</li>
 				<li>itemName</li>
 				<li>itemCost</li>
-				<li>itemInventory</li>
-				<li>itemPostDate</li>
 			</ul>
 			<h3>Favorite</h3>
 			<ul>
-				<li>favoriteProfileID</li>
+				<li>favoriteProfileId</li>
 				<li>favoriteDate</li>
 				<li>favoriteItemID</li>
 			</ul>
 
 
-			<h3>Relationships</h3>
+			<h2>Relationships</h2>
 			<ul>
 				<li>One user can favorite once for any single furniture product</li>
 				<li>Many users can favorite any furniture products</li>
