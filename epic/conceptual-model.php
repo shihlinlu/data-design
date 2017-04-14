@@ -29,9 +29,6 @@
 				<li>profileEmail</li>
 				<li>profileUsername</li>
 				<li>profileLocation</li>
-				<li>profileImage</li>
-				<li>profileFavoriteItems</li>
-				<li>profileItems</li>
 			</ul>
 			<h3>Items</h3>
 			<ul>
