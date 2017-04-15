@@ -30,7 +30,7 @@
 				<li>profileUsername</li>
 				<li>profileLocation</li>
 			</ul>
-			<h3>Items</h3>
+			<h3>Item</h3>
 			<ul>
 				<li>itemId</li>
 				<li>itemType</li>
