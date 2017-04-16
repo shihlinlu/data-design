@@ -53,7 +53,7 @@
 				<li>Many users can favorite any furniture products</li>
 				<li>Many furniture products can be favorited many times</li>
 			</ul>
-			<img src="images/erd.svg.svg" alt="entity relationship diagram"/>
+			<img src="images/erd.svg" alt="entity relationship diagram"/>
 
 
 
