@@ -33,6 +33,7 @@
 			<h3>Item</h3>
 			<ul>
 				<li>itemId</li>
+				<li>itemProfileId</li>
 				<li>itemType</li>
 				<li>itemDescription</li>
 				<li>itemName</li>
