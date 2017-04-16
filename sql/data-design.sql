@@ -28,6 +28,24 @@ CREATE TABLE profile (
 
 CREATE TABLE item (
 	itemId INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	item
+	itemProfileId INT UNSIGNED NOT NULL,
+	itemType CHAR(32) NOT NULL,
+	itemDescription VARCHAR(200) NOT NULL,
+	itemName VARCHAR(500) NOT NULL,
+	itemCost DECIMAL(11,2) NOT NULL,
+-- this creates an index before making a foregin key
+	INDEX (itemProfileId),
+	FOREIGN KEY (itemProfileId) REFERENCES profile(profileId),
+	PRIMARY KEY (itemId)
+);
 
+CREATE TABLE favorite (
+	favoriteProfileId INT UNSIGNED NOT NULL,
+	favoriteDate DATETIME(6) NOT NULL,
+	favoriteItemId INT UNSIGNED NOT NULL,
+	INDEX (favoriteProfileId),
+	INDEX (favoriteItemId),
+	FOREIGN KEY (favoriteProfileId) REFERENCES profile(profileId),
+	FOREIGN KEY (favoriteItemId) REFERENCES item(itemId),
+	PRIMARY KEY (favoriteItemId,favoriteProfileId)
 );
