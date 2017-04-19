@@ -2,14 +2,14 @@
 namespace Edu\Cnm\slu5\DataDesign;
 require_once("autoload.php");
 /**
- * echo '<h1>Small Cross Section of a Contempo Design favorite Product</h1>';
+ * Small Cross Section of a Contempo Design favorite Product
  *
- * echo '<p1>This Item can be treated as a small example of what eCommerce websites like Contempo Design store when products are favorited using Contempo Design. This can follow suit for more features of Contempo Design. </p1>';
+ * This Item can be treated as a small example of what eCommerce websites like Contempo Design store when products are favorited using Contempo Design. This can follow suit for more features of Contempo Design.
  *
  * @author Shihlin Lu <slu5@cnm.edu>
  * @version 1.0.0
  **/
-class Item implements \JsonSerializable {
+class Item {
 	/**
 	 * id for this Item; this is the primary key
 	 * @var int $itemId
@@ -113,7 +113,7 @@ class Item implements \JsonSerializable {
  	* @throws \RangeException if $newProfileId is not positive
  	* @throws \TypeError if $newProfileId is not an integer
 	 **/
-	public function setItemProfileId() : int {
+	public function setItemProfileId(int $newItemProfileId) : void {
 		// verify the profile id is positive
 		if($newItemProfileId <= 0) {
 			throw(new \RangeException("item profile id is not positive"));
