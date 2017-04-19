@@ -33,7 +33,7 @@ CREATE TABLE item (
 	itemDescription VARCHAR(200) NOT NULL,
 	itemName VARCHAR(500) NOT NULL,
 	itemCost DECIMAL(11,2) NOT NULL,
--- this creates an index before making a foregin key
+-- this creates an index before making a foreign key
 	INDEX (itemProfileId),
 	FOREIGN KEY (itemProfileId) REFERENCES profile(profileId),
 	PRIMARY KEY (itemId)
