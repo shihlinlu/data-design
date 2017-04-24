@@ -300,7 +300,7 @@ class Item implements \JsonSerializable {
 			throw(new \PDOException("unable to update an item that does not exist"));
 		}
 		// create query template
-		$query = "UPDATE item SET itemProfileId = :itemProfileId, itemDescription = :itemDescription, itemName = :itemName, itemType = :itemType, itemCost = :itemCost";
+		$query = "UPDATE item SET itemProfileId = :itemProfileId, itemDescription = :itemDescription, itemName = :itemName, itemType = :itemType, itemCost = :itemCost WHERE itemId = :itemId";
 		$statement = $pdo->prepare($query);
 		// bind the member variables to the place holders in the template
 		$parameters = ["itemProfileId" => $this->itemProfileId, "itemDescription" => $this->itemDescription, "itemName" => $this->itemName, "itemType" => $this->itemType, "itemCost" => $this->itemCost];
@@ -320,26 +320,25 @@ class Item implements \JsonSerializable {
 			throw(new \PDOException("item id is not positive"));
 		}
 		// create query template
-		$query = "SELECT itemId, itemProfileId, itemDescription, itemName, itemType, itemCost FROM item WHERE itemId = itemId";
+		$query = "SELECT itemId, itemProfileId, itemDescription, itemName, itemType, itemCost FROM item WHERE itemId = :itemId";
 		$statement = $pdo->prepare($query);
 		// bind the item id to the place holder in the template
 		$parameters = ["itemId" => $itemId];
 		$statement->execute($parameters);
 		// grab the item from mySQL
 		try {
-			$tweet = null;
+			$item = null;
+
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
 				$item = new Item($row["itemId"], $row["itemProfileId"], $row["itemDescription"], $row["itemName"], $row["itemType"], $row["itemCost"]);
-				$items[$items->key()] = $item;
-				$items->next();
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return($tweet);
+		return($item);
 	}
 	/**
 	 *
@@ -379,7 +378,7 @@ class Item implements \JsonSerializable {
 	}
 	/**
 	 *
-	 * gets Items by content
+	 * gets Items by description
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @param string $itemDescription item description to search for
