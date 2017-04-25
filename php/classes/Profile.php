@@ -288,19 +288,180 @@ class Profile implements \JsonSerializable {
 		// convert and store the location
 		$this->profileLocation = $newProfileLocation;
 	}
-
-
-
-
-
-
-
-
-
-
-
+	/**
+	 * inserts this Profile into mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function insert(\PDO $pdo): void {
+		// enforce the profileId  is null (i.e., don't insert a profile that already exists)
+		if($this->profileId !== null) {
+			throw(new \PDOException("not a new profile"));
+		}
+		// create new query template
+		$query = "INSERT INTO profile(profileId, profileActivationToken, profileEmail, profileHash, profileSalt, profileUsername, profileLocation) VALUES(:profileId, :profileActivationToken, :profileEmail, :profileHash, :profileSalt, :profileUsername, :profileLocation)";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["profileId" => $this->profileId, "profileActivationToken" => $this->profileActivationToken, "profileEmail" => $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt, "profileUsername" => $this->profileUsername, "profileLocation" => $this->profileLocation];
+		$statement->execute($parameters);
+		// update the null profileId with what mySQL just gave us
+		$this->profileId = intval($pdo->lastInsertId());
+	}
+	/**
+	 * deletes this Profile from mySQL
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function delete(\PDO $pdo) : void {
+		// enforce the profileId is not null (i.e., don't delete an item that hasn't been inserted)
+		if($this->profileId === null) {
+			throw(new \PDOException("unable to delete a profile that does not exist"));
+		}
+		// create query template
+		$query = "DELETE FROM profile WHERE profileId = :profileId";
+		$statement = $pdo->prepare($query);
+		// bind the member vairables to the place holder in the template
+		$parameters = ["profileId" => $this->profileId];
+		$statement->execute($parameters);
+	}
+	/**
+	 *
+	 * updates this Profile in mySQL
+	 *
+	 *@param \PDO $pdo PDO connection object
+	 *@throws \PDOException when mySQL related errors occur
+	 *@throws \TypeError if $pdo is not a PDO connection object
+	 **/
+	public function update(\PDO $pdo) : void {
+		// enforce the profileId is not null (i.e., don't update a profile that hasn't been inserted)
+		if($this->profileId === null) {
+			throw(new \PDOException("unable to update a profile that does not exist"));
+		}
+		// create query template
+		$query = "UPDATE profile SET profileActivationToken = :profileActivationToken, profileEmail = :profileEmail, profileHash = :profileHash, profileSalt = :profileSalt, profileUsername = :profileUsername, profileLocation = :profileLocation WHERE profileId = :profileId";
+		$statement = $pdo->prepare($query);
+		// bind the member variables to the place holders in the template
+		$parameters = ["profileActivationToken" => $this->profileActivationToken, "profileEmail" => $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt, "profileUsername" => $this->profileUsername, "profileLocation" => $this->profileLocation];
+		$statement->execute($parameters);
+	}
+	/**
+	 * gets the Profile by email
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $profileEmail email to search for
+	 * @return Profile|null Profile or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getProfileByProfileEmail(\PDO $pdo, string $profileEmail): ?Profile {
+		// sanitize the email before searching
+		$profileEmail = trim($profileEmail);
+		$profileEmail = filter_var($profileEmail, FILTER_VALIDATE_EMAIL);
+		$profileEmail = filter_var($profileEmail, FILTER_SANITIZE_EMAIL);
+		if(empty($profileEmail) === true) {
+			throw(new \PDOException("not a valid email"));
+		}
+		// create query template
+		$query = "SELECT profileId, profileActivationToken, profileEmail, profileHash, profileSalt, profileUsername, profileLocation FROM profile WHERE profileEmail = :profileEmail";
+		$statement = $pdo->prepare($query);
+		// bind the profile id to the place holder in the template
+		$parameters = ["profileEmail" => $profileEmail];
+		$statement->execute($parameters);
+		// grab the Profile from mySQL
+		try {
+			$profile = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$profile = new Profile($row["profileId"], $row["profileActivationToken"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"], $row["profileUsername"], $row["profileLocation"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($profile);
+	}
 
 	/**
+	 * gets the Profile by username
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param string $profileUsername username to search for
+	 * @return \SplFixedArray of all profiles found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getProfileByProfileUsername(\PDO $pdo, string $profileUsername) : \SplFixedArray {
+		// sanitize the username before searching
+		$profileUsername = trim($profileUsername);
+		$profileUsername = filter_var($profileUsername, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($profileUsername) === true) {
+			throw(new \PDOException("not a valid username"));
+		}
+		// create query template
+		$query = "SELECT profileId, profileActivationToken, profileEmail, profileHash, profileSalt, profileUsername, profileLocation FROM profile WHERE profileUsername = :profileUsername";
+		$statement = $pdo->prepare($query);
+		// bind the profile username to the place holder inthe template
+		$parameters = ["profileUsername" => $profileUsername];
+		$statement->execute($parameters);
+
+		$profiles = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$profile = new Profile($row["profileId"], $row["profileActivationToken"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"], $row["profileUsername"], $row["profileLocation"]);
+				$profiles[$profiles->key()] = $profile;
+				$profiles->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return($profiles);
+	}
+	/**
+	 * get the profile by activation token
+	 *
+	 * @param string $profileActivationToken
+	 * @param \PDO object $pdo
+	 * @return Profile|null Profile or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 */
+	public static function getProfileByProfileActivationToken(\PDO $pdo, string $profileActivationToken) : ?Profile {
+		// verify that the activation token is in the right format and is a string represenation of a hexadecimal
+		$profileActivationToken = trim($profileActivationToken);
+		if(!ctype_xdigit($profileActivationToken) === false) {
+			throw(new \InvalidArgumentException("profile activation token is in the wrong format"));
+		}
+		// create the query template
+		$query = "SELECT profileId, profileActivationToken, profileEmail, profileHash, profileSalt, profileUsername, profileLocation FROM profile WHERE profileActivationToken = :profileActivationToken";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile activation token to the placeholder in the template
+		$parameters = ["profileActivationToken" => $profileActivationToken];
+		$statement->execute($parameters);
+		// grab the profile from mySQL
+		try {
+			$profile = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$profile = new Profile($row["profileId"], $row["profileActivationToken"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"], $row["profileUsername"], $row["profileLocation"]);
+			}
+		} catch(\Exception $exception) {
+			// if the new row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($profile);
+	}
+	/**
+
 	 * formats the state variables for JSON serialization
 	 *
 	 * @return array resulting state variables to serialize

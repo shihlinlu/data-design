@@ -276,7 +276,7 @@ class Item implements \JsonSerializable {
 	 **/
 	public function delete(\PDO $pdo) : void {
 		// enforce the itemId is not null (i.e., don't delete an item that hasn't been inserted)
-		if(@$this->itemId === null) {
+		if($this->itemId === null) {
 			throw(new \PDOException("unable to delete an item that does not exist"));
 		}
 		// create query template
@@ -288,7 +288,7 @@ class Item implements \JsonSerializable {
 	}
 	/**
 	 *
-	 * updates this item in mySQL
+	 * updates this Item in mySQL
 	 *
 	 *@param \PDO $pdo PDO connection object
 	 *@throws \PDOException when mySQL related errors occur
@@ -528,7 +528,7 @@ class Item implements \JsonSerializable {
 	}
 
 	/**
-	 *gets all Items
+	 * gets all Items
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @return \SplFixedArray SplFixedArray of items found or null if not found
