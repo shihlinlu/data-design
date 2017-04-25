@@ -145,7 +145,7 @@ class Item implements \JsonSerializable {
 			throw(new \InvalidArgumentException("item description is empty or insecure"));
 		}
 		// verify that the item description will fit in the database
-		if(strlen($newItemDescription) >200) {
+		if(strlen($newItemDescription) > 200) {
 			throw(new \RangeException("item description is too long"));
 		}
 		// store the item description
@@ -565,9 +565,5 @@ class Item implements \JsonSerializable {
 		$fields = get_object_vars($this);
 		return($fields);
 	}
-
-
-
-
 }
 
