@@ -1,4 +1,6 @@
 <?php
+namespace Edu\Cnm\DataDesign;
+require_once("autoload.php");
 /**
  * Small Cross Section of a Contempo Design Profile
  *
