@@ -235,7 +235,7 @@ class Item implements \JsonSerializable {
 		}
 
 		// verify price is > 0
-		if($newItemCost > 0) {
+		if($newItemCost <= 0) {
 			throw(new \RangeException("item cost is not positive"));
 		}
 

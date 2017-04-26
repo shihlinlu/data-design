@@ -71,7 +71,7 @@ class Profile implements \JsonSerializable {
 			$this->setProfileUsername($newProfileUsername);
 			$this->setProfileLocation($newProfileLocation);
 		} // determine what exception was thrown
-		catch (\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
+		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
 			throw(new $exceptionType($exception->getMessage(), 0 , $exception));
 		}
@@ -98,7 +98,7 @@ class Profile implements \JsonSerializable {
 		}
 		// verify the profile id is positive
 		if($newProfileId <= 0) {
-			throw(new \ RangeException("profile id is not positive"));
+			throw(new \RangeException("profile id is not positive"));
 		}
 		// convert and store the profile id
 		$this->profileId = $newProfileId;
