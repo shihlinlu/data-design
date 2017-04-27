@@ -351,6 +351,42 @@ class Profile implements \JsonSerializable {
 		$statement->execute($parameters);
 	}
 	/**
+	 * gets Profile by profile id
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $profileId profile id to search for
+	 * @return Profile|null Profile or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profile {
+		// sanitize the profile id before searching
+		if($profileId <= 0) {
+			throw(new \PDOException("profile id is not positive"));
+		}
+
+		// create query template
+		$query = "SELECT profileId, profileActivationToken, profileEmail, profileHash, profileSalt, profileUsername, profileLocation FROM profile WHERE profileId = :profileId";
+		$statement = $pdo->prepare($query);
+
+		// bind the profile id to the place holder in the template
+		$parameters = ["profileId" => $profileId];
+		$statement->execute($parameters);
+
+		// grab the Profile from mySQL
+		try {
+			$profile = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$profile = new Profile($row["profileId"], $row["profileActivationToken"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"], $row["profileUsername"], $row["profileLocation"]);
+			}
+		} catch(\Exception $exception) {
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($profile);
+	}
+	/**
 	 * gets the Profile by email
 	 *
 	 * @param \PDO $pdo PDO connection object
