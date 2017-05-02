@@ -1,5 +1,4 @@
 <?php
-<?php
 require_once(dirname(__DIR__,3) . "/vendor/autoload.php";
 require_once(dirname(__DIR__,3) . "/php/classes/autoload.php");
 require_once(dirname(__DIR__, 3) . "/php/lib/xsrf.php");
@@ -33,7 +32,7 @@ try {
 	//$_SESSION["profile"] = Profile::getProfileByProfileId($pdo, 732);
 
 	// determine which HTTP method was used
-	$method = array_key_exists("HTTP_X_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $SERVER["REQUEST_METHOD"];
+	$method = array_key_exists("HTTP_X_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
 
 	// sanitize input
 	$id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
@@ -82,7 +81,7 @@ try {
 		// retrieve the profile to be updated
 		$profile = Profile::getProfileByProfileId($pdo, $id);
 		if($profile === null) {
-			throw(new RuntimeException("Profile does not exist"), 404);
+			throw(new RuntimeException("Profile does not exist", 404));
 		}
 
 		if(empty($requestObject->newPassword) === true) {
@@ -97,7 +96,7 @@ try {
 
 			//profile email is a required field
 			if(empty($requestObject->profileEmail) === true) {
-				throw(new \InvalidArgumentException("No profile email present") 405);
+				throw(new \InvalidArgumentException("No profile email present", 405));
 			}
 
 			$profile->setProfileUserName($requestObject->profileUsername);
