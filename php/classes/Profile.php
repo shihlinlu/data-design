@@ -107,7 +107,7 @@ class Profile implements \JsonSerializable {
 	 * accessor method for profile activation token
 	 * @return string value of activation token of profile
 	 **/
-	public function getProfileActivationToken(): string {
+	public function getProfileActivationToken(): ?string {
 		return($this->profileActivationToken);
 	}
 	/**
@@ -118,7 +118,7 @@ class Profile implements \JsonSerializable {
 	 * @throws \RangeException if $newProfileAProfileActivationToken is not 32 characters
 	 * @throws \TypeError if $newProfileActivationToken is not a string
 	 **/
-	public function setProfileActivationToken(string $newProfileActivationToken): void {
+	public function setProfileActivationToken(?string $newProfileActivationToken): void {
 		// ensure that the activation token is properly formatted
 		$newProfileActivationToken = trim($newProfileActivationToken);
 		$newProfileActivationToken = strtolower($newProfileActivationToken);
