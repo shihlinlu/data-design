@@ -84,6 +84,7 @@ try {
 		if($profile === null) {
 			throw(new RuntimeException("Profile does not exist"), 404);
 		}
+
 		if(empty($requestObject->newPassword) === true) {
 
 			// enforce that the XSRF token is present in the header
@@ -91,9 +92,86 @@ try {
 
 			//profile username
 			if(empty($requestObject->profileUsername) === true) {
-				throw()
+				throw(new \InvalidArgumentException("No profile username", 405));
 			}
-		}
-	}
 
+			//profile email is a required field
+			if(empty($requestObject->profileEmail) === true) {
+				throw(new \InvalidArgumentException("No profile email present") 405);
+			}
+
+			$profile->setProfileUserName($requestObject->profileUsername);
+			$profile->setProfileEmail($requestObject->profileEmail);
+			$profile->setProfileLocation($requestObject->profileLocation);
+			$profile->setProfileHash($requestObject->profileHash);
+			$profile->setProfileSalt($requestObject->profileSalt);
+			$profile->update($pdo);
+
+			// update reply
+			$reply->message = "Profile information updated";
+		}
+
+		/**
+		 * update the password if requested
+		 **/
+		// enforce that the current password is present and confirmed
+		if(empty($requestObject->ProfilePassword) === false && empty($requestObject-profileConfirmPassword) === false && empty($requestContent->ConfirmPassword) === false) {
+			// make sure the new password and confirm password exist
+			if($requestObject->newProfilePassword !== $requestObject->profileConfirmPassword) {
+				throw(new RuntimeException("New passwords do not match", 401));
+			}
+
+			// hash the previous password
+			$currentPasswordHash = hash_pbkdf2("sha512", $requestObject->currentProfilePassword, $profile->getProfileSalt(), 262144);
+
+			// make sure the hash given by the end user matches what is in the database
+			if($currentPasswordHash !== $profile->getProfileHash()) {
+				throw(new \RuntimeException("Old password is incorrect", 401));
+			}
+
+			// salt and hash the new password and update the profile object
+			$newPasswordSalt = bin2hex(random_bytes(16));
+			$newPasswordHash = hash_pbkdf2("sha512", $requestObject->newProfilePassword, $newPasswordSalt, 262144);
+			$profile->setProfileHash($newPasswordHash);
+			$profile->setProfileSalt($newProfileSalt);
+		}
+
+		// perform the actual update to the database and update the message
+		$profile->update($pdo);
+		$reply->message = "profile password successfully updated";
+
+	} elseif($method === "DELETE") {
+
+		// verify the XSRF Token
+		verifyXsrf();
+
+		$profile = Profile::getProfileByProfileId($pdo, $id);
+		if($profile === null) {
+			throw(new RuntimeException("Profile does not exist"));
+		}
+
+		// enforce the user is signed in and only trying to edit their own profile
+		if(empty($_SESSION["profile"]) === true || $_SESSION["profile"]->getProfileId()) {
+			throw(new \InvalidArgumentException("You are not allowed to access this profile", 403));
+		}
+
+		// delete the post from the database
+		$profile->delete($pdo);
+		$reply->message = "Profile Deleted";
+
+	} else {
+		throw(new InvalidArgumentException("Invalid HTTP request", 400));
+	}
+	// catch any exceptions that were thrown and update the status and message state variable fields
+} catch(\Exception | \TypeError $exception) {
+	$reply->status = $exception->getCode();
+	$reply->message = $exception->getMessage();
 }
+
+header("Content-type: application/json");
+if($reply->data === null) {
+	unset($reply->data);
+}
+
+// encode and return reply to the front end caller
+echo json_encode($reply);
