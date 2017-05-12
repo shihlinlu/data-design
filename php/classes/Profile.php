@@ -326,7 +326,7 @@ class Profile implements \JsonSerializable {
 		// create query template
 		$query = "DELETE FROM profile WHERE profileId = :profileId";
 		$statement = $pdo->prepare($query);
-		// bind the member vairables to the place holder in the template
+		// bind the member variables to the place holder in the template
 		$parameters = ["profileId" => $this->profileId];
 		$statement->execute($parameters);
 	}

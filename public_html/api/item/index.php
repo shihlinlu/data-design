@@ -7,3 +7,9 @@ require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
 use Edu\Cnm\DataDesign\ {
 	Item
 };
+
+/**
+ * api for the Item class
+ *
+ * @authoer Shihlin Lu <slu5@cnm.edu>
+ */

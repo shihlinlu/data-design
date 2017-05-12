@@ -11,6 +11,7 @@ use Edu\Cnm\DataDesign\ {
  * api for the Profile class
  *
  * @author Shihlin Lu <slu5@cnm.edu>
+ * @version 1.0
  */
 
 // verify the session; start if it is not active

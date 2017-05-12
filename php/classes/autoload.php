@@ -26,7 +26,7 @@ spl_autoload_register(function($class) {
 	// get the relative class name
 	$className = substr($class, $len);
 
-	// replace the namespace prefix with the base directory, replace namespace eparators with directory separators in the relative class name, append with .php
+	// replace the namespace prefix with the base directory, replace namespace separators with directory separators in the relative class name, append with .php
 	$file = $baseDir . str_replace("\\", "/", $className) . ".php";
 
 	// if the file exists, require it
